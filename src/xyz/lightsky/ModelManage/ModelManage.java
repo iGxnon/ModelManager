@@ -6,21 +6,26 @@ import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.data.Skin;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import java.lang.String;
+import net.minidev.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 public class ModelManage extends PluginBase {
 
 
-    private static HashMap<String, Skin> human_Model = new HashMap<>();
-    private static HashMap<String, Skin> monster_Model = new HashMap<>();
-    private static HashMap<String, Skin> pet_Model = new HashMap<>();
-    private static HashMap<String, Skin> object_Model = new HashMap<>();
+    private static LinkedHashMap<String, Skin> human_Model = new LinkedHashMap<>();
+    private static LinkedHashMap<String, Skin> monster_Model = new LinkedHashMap<>();
+    private static LinkedHashMap<String, Skin> pet_Model = new LinkedHashMap<>();
+    private static LinkedHashMap<String, Skin> object_Model = new LinkedHashMap<>();
 
 
     @Override
@@ -28,10 +33,6 @@ public class ModelManage extends PluginBase {
         if(getDataFolder().mkdirs()){
             getLogger().info("首次加载中");
         }
-        saveResource("/Human/human.yml");
-        saveResource("/Monster/monster.yml");
-        saveResource("/Pet/pet.yml");
-        saveResource("/Object/object.yml");
         upDataModel();
     }
 
@@ -55,6 +56,7 @@ public class ModelManage extends PluginBase {
         return object_Model;
     }
 
+
     private void upDataModel() {
         try {
             deBoxModel(Model.Human, true);
@@ -75,11 +77,9 @@ public class ModelManage extends PluginBase {
 
     private void deBoxModel(Model model, boolean isLog) throws IOException {
         File originalDir = new File(getDataFolder() + "/"+model.name()+"/");
-        Config yaml = new Config(getDataFolder() + "/"+model.name()+"/"+model.name().toLowerCase()+".yml", Config.YAML);
         for(String modelName : Objects.requireNonNull(originalDir.list())){
             File modelDir = null;
             if(!((modelDir = (new File(originalDir, modelName))).isDirectory())) continue;
-            if(yaml.getString(modelName) == null) continue;
             if(Objects.requireNonNull(modelDir.list()).length != 2) continue;
             Skin skin = new Skin();
             skin.setSkinId(modelName);
@@ -87,7 +87,7 @@ public class ModelManage extends PluginBase {
                 if(data.getName().endsWith(".json")){
                     String json = new String(Files.readAllBytes(data.toPath()), StandardCharsets.UTF_8);
                     skin.setGeometryData(json);
-                    skin.setGeometryName(yaml.getString(modelName));
+                    skin.setGeometryName(Objects.requireNonNull(getModel(data.toString())).getModelLabel());
                 }else if(data.getName().endsWith(".png")){
                     skin.setSkinData(ImageIO.read(data));
                 }else{
@@ -111,6 +111,13 @@ public class ModelManage extends PluginBase {
             }
             if(isLog) getLogger().info("成功构建 "+modelName);
         }
+    }
+
+    public static ModelBean getModel(String jsonPath) throws IOException {
+        if(!(new File(jsonPath).exists())) return null;
+        String json = new String(Files.readAllBytes((new File(jsonPath).toPath())));
+        json = "{\"modelsMap\": " + json + "}";
+        return (new Gson()).fromJson(json, ModelBean.class);
     }
 
 }
