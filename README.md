@@ -1,6 +1,7 @@
 # ModelManager
 
 ## 用处：
+- 方便4D插件直接读取4D Skin 数据
 - 反序列化Minecraft基岩版json模型
 - 序列化Minecraft基岩版json模型
 ---
