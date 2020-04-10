@@ -1,12 +1,6 @@
 name: ModelManage
 main: xyz.lightsky.ModelManage.ModelManage
-version: 1.0.0
+version: 2.0.0
 author: iGxnon
 load: POSTWORLD
 api: [1.0.9]
-commands:
-  nima:
-    permission: nima.ModelManage.nima
-permissions:
-  nima.ModelManage.nima:
-    default: true
