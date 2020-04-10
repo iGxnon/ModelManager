@@ -5,19 +5,20 @@ import cn.nukkit.Server;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.data.Skin;
 import cn.nukkit.plugin.PluginBase;
-import cn.nukkit.utils.Config;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+
 import java.lang.String;
-import net.minidev.json.JSONObject;
+
+import xyz.lightsky.ModelManage.Bean.ModelBean;
 
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ModelManage extends PluginBase {
 
@@ -33,6 +34,11 @@ public class ModelManage extends PluginBase {
         if(getDataFolder().mkdirs()){
             getLogger().info("首次加载中");
         }
+        (new File(getDataFolder(), "/Human/")).mkdir();
+        (new File(getDataFolder(), "/Monster/")).mkdir();
+        (new File(getDataFolder(), "/Pet/")).mkdir();
+        (new File(getDataFolder(), "/Object/")).mkdir();
+
         upDataModel();
     }
 
@@ -120,6 +126,14 @@ public class ModelManage extends PluginBase {
         return (new Gson()).fromJson(json, ModelBean.class);
     }
 
+    public static String getJson(ModelBean bean){
+        String json = (new Gson()).toJson(bean);
+        //剪去开头 "{\"modelsMap\": "
+        json = json.substring(14);
+        //剪去末尾"}"
+        json = json.substring(0, json.length()-1);
+        return json;
+    }
 }
 
 enum Model{
