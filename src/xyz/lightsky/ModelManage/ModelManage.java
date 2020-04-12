@@ -126,6 +126,11 @@ public class ModelManage extends PluginBase {
         return (new Gson()).fromJson(json, ModelBean.class);
     }
 
+    public static ModelBean getModelFromJsonString(String json){
+        json = "{\"modelsMap\": " + json + "}";
+        return (new Gson()).fromJson(json, ModelBean.class);
+    }
+
     public static String getJson(ModelBean bean){
         String json = (new Gson()).toJson(bean);
         //剪去开头 "{\"modelsMap\": "
