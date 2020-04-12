@@ -137,7 +137,7 @@ public class ModelManage extends PluginBase {
         json = json.substring(14);
         //剪去末尾"}"
         json = json.substring(0, json.length()-1);
-        return json;
+        return "{" + json;
     }
 }
 
