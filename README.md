@@ -1,6 +1,6 @@
 # ModelManager
 ---
-## [服主请点击我下载jar](https://github.com/iGxnon/ModelManager/releases/download/2.0.0/ModelManage.jar)
+## [服主请点击我下载jar](https://github.com/iGxnon/ModelManager/releases/download/2.1.0/ModelManage.jar)
 ---
 ## 用处：
 - 方便4D插件直接读取4D Skin 数据
